@@ -6,8 +6,6 @@
   <title>Login | Smart Farming</title>
   <link rel="stylesheet" href="style.css">
 </head>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <body class="auth-body">
 
@@ -15,13 +13,20 @@
     <h1>🌱 Smart Farming</h1>
     <p>Precision Agriculture Dashboard</p>
 
-    <input type="text" placeholder="Username">
-    <input type="password" placeholder="Password">
+    <input type="email" id="username" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
 
     <button onclick="login()">Sign In</button>
-    <span class="hint">Demo UI • Hardware sync later</span>
+    <span class="hint">Template login • Client-side validation</span>
   </div>
 
-<script src="script.js"></script>
+  <div id="loginLoader" class="dialog hidden">
+    <div>
+      <h3>Authenticating…</h3>
+      <p>Please wait <span id="loginCount">3</span>s</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>

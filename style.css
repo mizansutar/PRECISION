@@ -176,3 +176,128 @@ body {
 @media (min-width: 1024px) {
   .container { max-width: 1100px; }
 }
+.dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.dialog > div {
+  background: var(--card);
+  padding: 32px;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.hidden {
+  display: none;
+}
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f4f6f8;
+}
+
+.topbar {
+  background: #1f2937;
+  color: #fff;
+  padding: 15px 20px;
+}
+
+.container {
+  padding: 20px;
+}
+
+.status-grid,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.card,
+.status-card {
+  background: #fff;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+}
+
+.highlight {
+  background: #e0f2fe;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button.on {
+  background: #16a34a;
+  color: white;
+}
+
+button.off {
+  background: #dc2626;
+  color: white;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.mode-toggle button {
+  margin: 0 5px;
+}
+
+.mode-toggle .active {
+  outline: 2px solid #2563eb;
+}
+
+.timestamp {
+  text-align: center;
+  color: #555;
+}
+
+/* Loader */
+.dialog {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dialog.hidden {
+  display: none;
+}
+
+.dialog-box {
+  background: white;
+  padding: 25px;
+  border-radius: 12px;
+  text-align: center;
+}

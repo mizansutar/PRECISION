@@ -6,6 +6,7 @@
   <title>Dashboard | Smart Farming</title>
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
 
 <header class="topbar">
@@ -13,24 +14,11 @@
     <h2>🌱 Smart Farming</h2>
     <small>Field Status Overview</small>
   </div>
-
-  <button class="logout-btn" onclick="logout()">
-    <span>Sign out</span>
-    <svg width="16" height="16" viewBox="0 0 24 24">
-      <path fill="currentColor"
-        d="M14 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h9v-2H5V5h9V3m7.59 9L17 7.41 15.59 9 18.17 11.59H9v2h9.17L15.59 16 17 17.59 21.59 13Z"/>
-    </svg>
-  </button>
 </header>
 
 <main class="container">
 
-  <!-- STATUS -->
   <section class="status-grid">
-    <div class="status-card">
-      <span>System</span>
-      <h3 class="ok">ONLINE</h3>
-    </div>
     <div class="status-card">
       <span>Mode</span>
       <h3 id="modeText">AUTO</h3>
@@ -41,61 +29,64 @@
     </div>
   </section>
 
-  <!-- SOIL -->
-  <section class="card highlight">
-    <span>Soil Moisture</span>
-    <h1 id="soil">45%</h1>
-    <p class="sub">Optimal Range: 40–60%</p>
+  <!-- SOIL MOISTURE -->
+  <section class="grid">
+    <div class="card highlight">
+      <span>Soil Moisture 1</span>
+      <h1 id="soil">0%</h1>
+    </div>
+    <div class="card highlight">
+      <span>Soil Moisture 2</span>
+      <h1 id="soil2">0%</h1>
+    </div>
   </section>
 
-  <!-- ENV -->
+  <!-- OTHER SENSORS -->
   <section class="grid">
-    <div class="card">
-      <span>Temperature</span>
-      <h2 id="temp">29°C</h2>
-    </div>
-    <div class="card">
-      <span>Humidity</span>
-      <h2 id="hum">63%</h2>
-    </div>
+    <div class="card"><span>Air Temp</span><h2 id="temp">0°C</h2></div>
+    <div class="card"><span>Humidity</span><h2 id="hum">0%</h2></div>
+    <div class="card"><span>Soil Temp</span><h2 id="soilTemp">0°C</h2></div>
+    <div class="card"><span>Gas</span><h2 id="gas">0%</h2></div>
   </section>
 
   <!-- MODE -->
   <section class="card">
     <span>Control Mode</span>
     <div class="mode-toggle">
-      <button id="autoBtn" class="mode active" onclick="setMode('AUTO')">AUTO</button>
-      <button id="manualBtn" class="mode" onclick="setMode('MANUAL')">MANUAL</button>
+      <button id="autoBtn" onclick="setMode('AUTO')">AUTO</button>
+      <button id="manualBtn" onclick="setMode('MANUAL')">MANUAL</button>
     </div>
   </section>
 
   <!-- PUMP -->
   <section class="actions">
-    <button id="startBtn" class="btn on" onclick="pumpOn()">Start Pump</button>
-    <button id="stopBtn" class="btn off" onclick="pumpOff()">Stop Pump</button>
+    <button id="startBtn" class="on" onclick="pumpOn()">Start Pump</button>
+    <button id="stopBtn" class="off" onclick="pumpOff()">Stop Pump</button>
   </section>
 
-  <!-- MACHINE / MOTOR -->
+  <!-- MOTOR -->
   <section class="card">
-    <span>Machine / Motor Control</span>
+    <span>Machine / Motor</span>
     <p>Status: <strong id="machineStatus">OFF</strong></p>
-
     <div class="actions">
-      <button id="machineOn" class="btn on" onclick="machineOn()">Machine ON</button>
-      <button id="machineOff" class="btn off" onclick="machineOff()">Machine OFF</button>
+      <button id="machineOn" class="on" onclick="machineOn()">ON</button>
+      <button id="machineOff" class="off" onclick="machineOff()">OFF</button>
     </div>
   </section>
 
-  <!-- ALERT -->
-  <section class="card alert">
-    <span>Alerts</span>
-    <p id="alertText">No active alerts</p>
-  </section>
-
   <p class="timestamp">Last updated: <span id="time"></span></p>
-
 </main>
 
+<!-- LOADER -->
+<div id="loader" class="dialog hidden">
+  <div class="dialog-box">
+    <h3 id="loaderText">Processing…</h3>
+    <p>Please wait <span id="loaderCount">5</span>s</p>
+  </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <script src="script.js"></script>
 </body>
 </html>

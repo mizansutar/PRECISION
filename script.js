@@ -1,97 +1,104 @@
-/* ================= FIREBASE CONFIG ================= */
-const firebaseConfig = {
-  apiKey: "YOUR_API_KEY",
-  databaseURL: "https://precision-farming-2e7f8-default-rtdb.firebaseio.com",
-};
+firebase.initializeApp({
+  apiKey: "AIzaSyBif0bGirDQMEohzMQC1UDR6tgpaFGy5OY",
+  databaseURL: "https://precision-farming-2e7f8-default-rtdb.firebaseio.com"
+});
 
-firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
+const $ = id => document.getElementById(id);
 
-/* ================= STATE ================= */
 let mode = "AUTO";
+let busy = false;
 
-/* ================= AUTH (UI ONLY) ================= */
-function login() {
-  window.location = "dashboard.html";
+/* ===== LOADER ===== */
+function showLoader(text, sec, cb) {
+  if (busy) return;
+  busy = true;
+
+  $("loaderText").innerText = text;
+  $("loaderCount").innerText = sec;
+  $("loader").classList.remove("hidden");
+
+  let t = sec;
+  const timer = setInterval(() => {
+    $("loaderCount").innerText = --t;
+    if (t <= 0) {
+      clearInterval(timer);
+      $("loader").classList.add("hidden");
+      busy = false;
+      cb && cb();
+    }
+  }, 1000);
 }
 
-function logout() {
-  window.location = "index.html";
-}
-
-/* ================= MODE ================= */
-function setMode(m) {
-  mode = m;
-  db.ref("mode").set(m);
-}
-
-/* ================= MANUAL CONTROLS ================= */
-function pumpOn() {
-  if (mode === "MANUAL") {
-    db.ref("manual/waterPump").set("ON");
-  }
-}
-
-function pumpOff() {
-  if (mode === "MANUAL") {
-    db.ref("manual/waterPump").set("OFF");
-  }
-}
-
-function machineOn() {
-  if (mode === "MANUAL") {
-    db.ref("manual/sprayPump").set("ON");
-  }
-}
-
-function machineOff() {
-  if (mode === "MANUAL") {
-    db.ref("manual/sprayPump").set("OFF");
-  }
-}
-
-/* ================= LIVE DATA ================= */
+/* ===== LIVE DATA ===== */
 db.ref("live").on("value", snap => {
   const d = snap.val();
   if (!d) return;
 
-  soil.innerText = d.soil1 + "%";
-  temp.innerText = d.airTemp + "°C";
-  hum.innerText = d.humidity + "%";
-  pump.innerText = d.waterPump;
-  machineStatus.innerText = d.sprayPump;
+  $("soil").innerText = d.soil1 + "%";
+  $("soil2").innerText = d.soil2 + "%";
+  $("temp").innerText = d.airTemp + "°C";
+  $("hum").innerText = d.humidity + "%";
+  $("gas").innerText = d.gas + "%";
+  $("soilTemp").innerText =
+    d.soilTemp < -100 ? "ERR" : d.soilTemp + "°C";
 
-  if (d.waterPump === "ON") {
-    alertText.innerText = "Irrigation running";
-  } else {
-    alertText.innerText = "No active alerts";
-  }
+  $("pump").innerText = d.waterPump;
+  $("machineStatus").innerText = d.sprayPump;
 });
 
-/* ================= MODE LISTENER ================= */
+/* ===== MODE ===== */
 db.ref("mode").on("value", snap => {
   mode = snap.val() || "AUTO";
-  modeText.innerText = mode;
+  $("modeText").innerText = mode;
 
-  autoBtn.classList.remove("active");
-  manualBtn.classList.remove("active");
+  const manual = mode === "MANUAL";
+  $("autoBtn").classList.toggle("active", !manual);
+  $("manualBtn").classList.toggle("active", manual);
 
-  if (mode === "AUTO") {
-    autoBtn.classList.add("active");
-    startBtn.disabled = true;
-    stopBtn.disabled = true;
-    machineOn.disabled = true;
-    machineOff.disabled = true;
-  } else {
-    manualBtn.classList.add("active");
-    startBtn.disabled = false;
-    stopBtn.disabled = false;
-    machineOn.disabled = false;
-    machineOff.disabled = false;
-  }
+  ["startBtn","stopBtn","machineOn","machineOff"]
+    .forEach(id => $(id).disabled = !manual);
 });
 
-/* ================= CLOCK ================= */
+/* ===== CONTROLS ===== */
+function setMode(m) {
+  showLoader(`Switching to ${m}…`, 10, () => {
+    db.ref("mode").set(m);
+    if (m === "AUTO") {
+      db.ref("manual").set({ waterPump: "OFF", sprayPump: "OFF" });
+    }
+  });
+}
+
+function pumpOn() {
+  if (mode !== "MANUAL") return;
+  showLoader("Pump ON…", 10, () =>
+    db.ref("manual/waterPump").set("ON")
+  );
+}
+
+function pumpOff() {
+  if (mode !== "MANUAL") return;
+  showLoader("Pump OFF…", 10, () =>
+    db.ref("manual/waterPump").set("OFF")
+  );
+}
+
+function machineOn() {
+  if (mode !== "MANUAL") return;
+  showLoader("Motor ON…", 10, () =>
+    db.ref("manual/sprayPump").set("ON")
+  );
+}
+
+function machineOff() {
+  if (mode !== "MANUAL") return;
+  showLoader("Motor OFF…", 5, () =>
+    db.ref("manual/sprayPump").set("OFF")
+  );
+}
+
+/* ===== CLOCK ===== */
 setInterval(() => {
-  time.innerText = new Date().toLocaleTimeString();
+  $("time").innerText = new Date().toLocaleTimeString();
 }, 1000);
