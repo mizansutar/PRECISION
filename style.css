@@ -3,7 +3,6 @@
   --card: #0f172a;
   --primary: #22c55e;
   --danger: #ef4444;
-  --warn: #facc15;
   --text: #e5e7eb;
   --muted: #9ca3af;
 }
@@ -12,12 +11,12 @@
 
 body {
   margin: 0;
-  font-family: "Inter", system-ui, sans-serif;
-  background: linear-gradient(135deg, #020617, #020617);
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
   color: var(--text);
 }
 
-/* LOGIN */
+/* ================= LOGIN ================= */
 .auth-body {
   display: flex;
   height: 100vh;
@@ -51,98 +50,146 @@ body {
   border: none;
   border-radius: 12px;
   font-weight: 600;
+  cursor: pointer;
 }
 
-.hint { font-size: 12px; color: var(--muted); }
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+}
 
-/* TOP BAR */
+/* ================= TOP BAR ================= */
 .topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 18px;
-  background: var(--bg);
+  background: #020617;
+  padding: 18px 24px;
 }
 
-/* DASHBOARD */
-.container {
-  max-width: 520px;
-  margin: auto;
-  padding: 20px;
+.topbar h2 {
+  margin: 0;
 }
+
+.topbar small {
+  color: var(--muted);
+}
+
+/* ================= DASHBOARD LAYOUT ================= */
+
+.container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px; /* CRITICAL: vertical separation */
+}
+
+/* ================= STATUS ================= */
 
 .status-grid {
   display: grid;
-  grid-template-columns: repeat(3,1fr);
-  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
 }
 
+/* ================= GENERIC CARD ================= */
+
+.card,
 .status-card {
-  background: var(--card);
-  padding: 12px;
-  border-radius: 14px;
-  text-align: center;
-}
-
-.ok { color: var(--primary); }
-
-.card {
   background: var(--card);
   padding: 20px;
   border-radius: 18px;
-  margin-top: 16px;
   text-align: center;
 }
 
-.highlight h1 {
-  font-size: clamp(3rem, 6vw, 4rem);
-  color: var(--primary);
-}
+/* ================= SOIL + SENSOR GRIDS ================= */
 
 .grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
 }
+
+/* Ensure each grid is visually separate */
+.grid + .grid {
+  margin-top: 10px;
+}
+
+/* ================= HIGHLIGHT CARDS ================= */
+
+.highlight {
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.highlight h1 {
+  margin-top: 8px;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  color: var(--primary);
+}
+
+/* ================= MODE ================= */
 
 .mode-toggle {
   display: flex;
   gap: 12px;
-  margin-top: 12px;
+  margin-top: 14px;
 }
 
-.mode {
+.mode-toggle button {
   flex: 1;
   padding: 14px;
-  border-radius: 12px;
-  border: none;
+  border-radius: 14px;
   background: #1e293b;
   color: var(--text);
+  border: none;
 }
 
-.mode.active {
+.mode-toggle .active {
   background: var(--primary);
   color: #000;
 }
 
+/* ================= ACTIONS ================= */
+
 .actions {
   display: flex;
-  gap: 12px;
-  margin-top: 12px;
+  gap: 14px;
 }
 
-.btn {
+.actions button {
   flex: 1;
-  padding: 16px;
+}
+
+/* ================= BUTTONS ================= */
+
+button {
+  padding: 14px;
   border-radius: 14px;
   border: none;
-  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-.btn.on { background: var(--primary); }
-.btn.off { background: var(--danger); color: white; }
+button.on {
+  background: var(--primary);
+  color: #000;
+}
 
-.alert { border-left: 4px solid var(--warn); }
+button.off {
+  background: var(--danger);
+  color: #fff;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ================= FOOTER ================= */
 
 .timestamp {
   text-align: center;
@@ -150,32 +197,81 @@ body {
   color: var(--muted);
 }
 
-/* LOGOUT */
-.logout-btn {
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 600px) {
+  .actions {
+    flex-direction: column;
+  }
+}
+
+
+/* ================= MODE ================= */
+.mode-toggle {
   display: flex;
-  gap: 8px;
-  align-items: center;
-  background: rgba(239,68,68,0.15);
-  color: #fecaca;
-  border: 1px solid rgba(239,68,68,0.35);
-  padding: 10px 14px;
-  border-radius: 12px;
+  gap: 12px;
+  margin-top: 12px;
 }
 
-/* RESPONSIVE */
-@media (max-width: 480px) {
-  .status-grid, .grid { grid-template-columns: 1fr; }
-  .actions { flex-direction: column; }
-  .topbar { flex-direction: column; align-items: flex-start; gap: 10px; }
+.mode-toggle button {
+  flex: 1;
+  padding: 14px;
+  border-radius: 14px;
+  background: #1e293b;
+  color: var(--text);
+  border: none;
 }
 
-@media (min-width: 768px) {
-  .container { max-width: 900px; }
+.mode-toggle .active {
+  background: var(--primary);
+  color: #000;
 }
 
-@media (min-width: 1024px) {
-  .container { max-width: 1100px; }
+/* ================= ACTIONS ================= */
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
 }
+
+button {
+  padding: 14px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button.on {
+  background: var(--primary);
+  color: #000;
+}
+
+button.off {
+  background: var(--danger);
+  color: #fff;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ================= FOOTER ================= */
+.timestamp {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* ================= LOADER ================= */
 .dialog {
   position: fixed;
   inset: 0;
@@ -186,118 +282,20 @@ body {
   z-index: 2000;
 }
 
-.dialog > div {
+.dialog.hidden {
+  display: none;
+}
+
+.dialog-box {
   background: var(--card);
   padding: 32px;
   border-radius: 18px;
   text-align: center;
 }
 
-.hidden {
-  display: none;
-}
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #f4f6f8;
-}
-
-.topbar {
-  background: #1f2937;
-  color: #fff;
-  padding: 15px 20px;
-}
-
-.container {
-  padding: 20px;
-}
-
-.status-grid,
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 15px;
-  margin-bottom: 20px;
-}
-
-.card,
-.status-card {
-  background: #fff;
-  padding: 15px;
-  border-radius: 10px;
-  text-align: center;
-}
-
-.highlight {
-  background: #e0f2fe;
-}
-
-.actions {
-  display: flex;
-  gap: 10px;
-  justify-content: center;
-  margin-bottom: 20px;
-}
-
-button {
-  padding: 10px 18px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-button.on {
-  background: #16a34a;
-  color: white;
-}
-
-button.off {
-  background: #dc2626;
-  color: white;
-}
-
-button:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-}
-
-button:disabled {
-  opacity: 0.4;
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-.mode-toggle button {
-  margin: 0 5px;
-}
-
-.mode-toggle .active {
-  outline: 2px solid #2563eb;
-}
-
-.timestamp {
-  text-align: center;
-  color: #555;
-}
-
-/* Loader */
-.dialog {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.dialog.hidden {
-  display: none;
-}
-
-.dialog-box {
-  background: white;
-  padding: 25px;
-  border-radius: 12px;
-  text-align: center;
+/* ================= RESPONSIVE ================= */
+@media (max-width: 600px) {
+  .actions {
+    flex-direction: column;
+  }
 }
