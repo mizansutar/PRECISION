@@ -52,29 +52,28 @@ const d = snap.val()
 
 if(!d) return
 
-$("soil").innerText = d.soil1 + "%"
-$("soil2").innerText = d.soil2 + "%"
+$("soil").innerText = (d.soil1 ?? 0) + "%"
+$("soil2").innerText = (d.soil2 ?? 0) + "%"
 
-$("temp").innerText = d.airTemp + "°C"
-$("hum").innerText = d.humidity + "%"
+$("temp").innerText = (d.airTemp ?? 0) + "°C"
+$("hum").innerText = (d.humidity ?? 0) + "%"
 
-$("soilTemp").innerText = d.soilTemp + "°C"
-$("gas").innerText = d.gas + "%"
+$("soilTemp").innerText = (d.soilTemp ?? 0) + "°C"
+$("gas").innerText = (d.gas ?? 0) + "%"
 
-$("ph").innerText = d.ph
+$("ph").innerText = (d.ph ?? 0)
 
 })
 
-/* MANUAL STATUS */
+/* DEVICE STATUS */
 
 db.ref("manual").on("value",snap=>{
 
 const m = snap.val()
-
 if(!m) return
 
-$("pump").innerText = m.waterPump
-$("machineStatus").innerText = m.sprayPump
+$("pump").innerText = m.waterPump || "OFF"
+$("machineStatus").innerText = m.sprayPump || "OFF"
 
 })
 
@@ -91,14 +90,15 @@ $("modeText").innerText = mode
 /* CONTROLS */
 
 function setMode(m){
-
 db.ref("mode").set(m)
-
 }
 
 function pumpOn(){
 
-if(mode !== "MANUAL") return
+if(mode !== "MANUAL"){
+alert("Switch to MANUAL mode")
+return
+}
 
 db.ref("manual/waterPump").set("ON")
 
@@ -106,7 +106,10 @@ db.ref("manual/waterPump").set("ON")
 
 function pumpOff(){
 
-if(mode !== "MANUAL") return
+if(mode !== "MANUAL"){
+alert("Switch to MANUAL mode")
+return
+}
 
 db.ref("manual/waterPump").set("OFF")
 
@@ -114,7 +117,10 @@ db.ref("manual/waterPump").set("OFF")
 
 function machineOn(){
 
-if(mode !== "MANUAL") return
+if(mode !== "MANUAL"){
+alert("Switch to MANUAL mode")
+return
+}
 
 db.ref("manual/sprayPump").set("ON")
 
@@ -122,7 +128,10 @@ db.ref("manual/sprayPump").set("ON")
 
 function machineOff(){
 
-if(mode !== "MANUAL") return
+if(mode !== "MANUAL"){
+alert("Switch to MANUAL mode")
+return
+}
 
 db.ref("manual/sprayPump").set("OFF")
 
@@ -132,8 +141,6 @@ db.ref("manual/sprayPump").set("OFF")
 
 setInterval(()=>{
 
-const now = new Date()
-
-$("time").innerText = now.toLocaleTimeString()
+$("time").innerText = new Date().toLocaleTimeString()
 
 },1000)
