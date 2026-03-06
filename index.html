@@ -1,33 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Login | Smart Farming</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login | Smart Farming</title>
+<link rel="stylesheet" href="style.css">
 </head>
 
 <body class="auth-body">
 
-  <div class="auth-card">
-    <h1>🌱 Smart Farming</h1>
-    <p>Precision Agriculture Dashboard</p>
+<div class="auth-card">
 
-    <input type="email" id="username" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
+<h1>🌱 Smart Farming</h1>
+<p>Precision Agriculture Dashboard</p>
 
-    <button onclick="login()">Sign In</button>
-    <span class="hint">Demo login • Client-side validation</span>
-  </div>
+<input type="email" id="username" placeholder="Email">
+<input type="password" id="password" placeholder="Password">
 
-  <!-- Loader -->
-  <div id="loginLoader" class="dialog hidden">
-    <div class="dialog-box">
-      <h3>Authenticating…</h3>
-      <p>Please wait <span id="loginCount">3</span>s</p>
-    </div>
-  </div>
+<button onclick="login()">Sign In</button>
 
-  <script src="script.js"></script>
+<span class="hint">
+Demo login • Client-side validation
+</span>
+
+</div>
+
+<div id="loginLoader" class="dialog hidden">
+<div class="dialog-box">
+<h3>Authenticating…</h3>
+<p>Please wait <span id="loginCount">3</span>s</p>
+</div>
+</div>
+
+<script src="script.js"></script>
+
 </body>
 </html>
