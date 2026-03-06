@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
 <title>Smart Farming Dashboard</title>
 
@@ -16,171 +16,109 @@
 
 <header class="topbar">
 
-<div class="title">
-
-<h2>🌱 Smart Farming</h2>
-<small>Field Status Overview</small>
-
-</div>
+<h2>🌱 Smart Farming Dashboard</h2>
 
 </header>
 
-
 <main class="container">
-
-
-<!-- STATUS -->
 
 <section class="status-grid">
 
 <div class="status-card">
-<span>Mode</span>
+Mode
 <h3 id="modeText">AUTO</h3>
 </div>
 
 <div class="status-card">
-<span>Water Pump</span>
+Water Pump
 <h3 id="pump">OFF</h3>
 </div>
 
 </section>
 
-
-<!-- SOIL MOISTURE -->
-
 <section class="grid">
 
-<div class="card highlight">
-<span>Soil Moisture 1</span>
-<h1 id="soil">0%</h1>
+<div class="card">
+Soil Moisture 1
+<h2 id="soil">0%</h2>
 </div>
 
-<div class="card highlight">
-<span>Soil Moisture 2</span>
-<h1 id="soil2">0%</h1>
+<div class="card">
+Soil Moisture 2
+<h2 id="soil2">0%</h2>
 </div>
 
 </section>
 
-
-<!-- SENSOR DATA -->
-
 <section class="grid">
 
 <div class="card">
-<span>Air Temperature</span>
+Temperature
 <h2 id="temp">0°C</h2>
 </div>
 
 <div class="card">
-<span>Humidity</span>
+Humidity
 <h2 id="hum">0%</h2>
 </div>
 
 <div class="card">
-<span>Soil Temperature</span>
+Soil Temp
 <h2 id="soilTemp">0°C</h2>
 </div>
 
 <div class="card">
-<span>Gas Level</span>
+Gas
 <h2 id="gas">0%</h2>
 </div>
 
 <div class="card">
-<span>pH Level</span>
+pH
 <h2 id="ph">0</h2>
 </div>
 
 </section>
 
-
-<!-- MODE CONTROL -->
-
 <section class="card">
 
-<span>Control Mode</span>
+Mode Control
 
 <div class="mode-toggle">
 
-<button id="autoBtn" onclick="setMode('AUTO')">AUTO</button>
-
-<button id="manualBtn" onclick="setMode('MANUAL')">MANUAL</button>
+<button onclick="setMode('AUTO')" id="autoBtn">AUTO</button>
+<button onclick="setMode('MANUAL')" id="manualBtn">MANUAL</button>
 
 </div>
 
 </section>
-
-
-<!-- WATER PUMP -->
 
 <section class="actions">
 
-<button id="startBtn" class="on" onclick="pumpOn()">Start Pump</button>
-
-<button id="stopBtn" class="off" onclick="pumpOff()">Stop Pump</button>
-
-</section>
-
-
-<!-- SPRAY MOTOR -->
-
-<section class="card">
-
-<span>Spray Motor</span>
-
-<p>Status : <strong id="machineStatus">OFF</strong></p>
-
-<div class="actions">
-
-<button id="machineOn" class="on" onclick="machineOn()">ON</button>
-
-<button id="machineOff" class="off" onclick="machineOff()">OFF</button>
-
-</div>
+<button onclick="pumpOn()">Pump ON</button>
+<button onclick="pumpOff()">Pump OFF</button>
 
 </section>
 
+<section class="actions">
 
-<!-- TIME -->
+<button onclick="machineOn()">Spray ON</button>
+<button onclick="machineOff()">Spray OFF</button>
+
+</section>
 
 <p class="timestamp">
 
-Last updated :
+Updated :
 <span id="time"></span>
 
 </p>
 
-
 </main>
 
-
-<!-- LOADER -->
-
-<div id="loader" class="dialog hidden">
-
-<div class="dialog-box">
-
-<h3 id="loaderText">Processing…</h3>
-
-<p>Please wait <span id="loaderCount">5</span>s</p>
-
-</div>
-
-</div>
-
-
-<!-- FIREBASE -->
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
-
-<!-- SCRIPT -->
-
 <script src="script.js"></script>
-
 
 </body>
 </html>
