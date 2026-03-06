@@ -1,0 +1,145 @@
+#include <WiFi.h>
+#include <Firebase_ESP_Client.h>
+#include <DHT.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <time.h>
+
+/* ========== WIFI ========== */
+#define WIFI_SSID "H"
+#define WIFI_PASSWORD "00000000"
+
+/* ========== FIREBASE ========== */
+#define API_KEY "AIzaSyBif0bGirDQMEohzMQC1UDR6tgpaFGy5OY"
+#define DATABASE_URL "https://precision-farming-2e7f8-default-rtdb.firebaseio.com/"
+#define USER_EMAIL "device@farm.local"
+#define USER_PASSWORD "StrongPassword123"
+
+/* ========== PINS ========== */
+#define RELAY_WATER 22   // ACTIVE LOW
+#define RELAY_SPRAY 23   // ACTIVE LOW
+#define LED_WATER 18
+#define LED_SPRAY 19
+
+#define DHTPIN 4
+#define DHTTYPE DHT22
+#define MQ135_PIN 34
+#define SOIL1_PIN 32
+#define SOIL2_PIN 33
+#define ONE_WIRE_BUS 27
+
+/* ========== OBJECTS ========== */
+FirebaseData fbdo;
+FirebaseAuth auth;
+FirebaseConfig config;
+
+DHT dht(DHTPIN, DHTTYPE);
+OneWire oneWire(ONE_WIRE_BUS);
+DallasTemperature ds18b20(&oneWire);
+
+/* ========== CALIBRATION ========== */
+#define SOIL_WET_RAW 1500
+#define SOIL_DRY_RAW 3500
+#define MQ_MIN 200
+#define MQ_MAX 3000
+
+bool waterState = false;
+bool sprayState = false;
+
+void setup() {
+  Serial.begin(115200);
+
+  pinMode(RELAY_WATER, OUTPUT);
+  pinMode(RELAY_SPRAY, OUTPUT);
+  pinMode(LED_WATER, OUTPUT);
+  pinMode(LED_SPRAY, OUTPUT);
+
+  digitalWrite(RELAY_WATER, HIGH);
+  digitalWrite(RELAY_SPRAY, HIGH);
+  digitalWrite(LED_WATER, LOW);
+  digitalWrite(LED_SPRAY, LOW);
+
+  dht.begin();
+  ds18b20.begin();
+
+  analogReadResolution(12);
+  analogSetAttenuation(ADC_11db);
+
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  while (WiFi.status() != WL_CONNECTED) delay(300);
+
+  configTime(0, 0, "pool.ntp.org");
+  time_t now;
+  while (time(&now) < 100000) delay(500);
+
+  config.api_key = API_KEY;
+  config.database_url = DATABASE_URL;
+  auth.user.email = USER_EMAIL;
+  auth.user.password = USER_PASSWORD;
+
+  Firebase.begin(&config, &auth);
+  Firebase.reconnectWiFi(true);
+}
+
+void loop() {
+
+  /* ===== READ SENSORS ===== */
+  float airTemp = dht.readTemperature();
+  float humidity = dht.readHumidity();
+
+  ds18b20.requestTemperatures();
+  delay(750);
+  float soilTemp = ds18b20.getTempCByIndex(0);
+  if (soilTemp < -100) soilTemp = NAN;
+
+  int rawSoil1 = analogRead(SOIL1_PIN);
+  int rawSoil2 = analogRead(SOIL2_PIN);
+
+  int soil1Pct = map(constrain(rawSoil1, SOIL_WET_RAW, SOIL_DRY_RAW),
+                     SOIL_WET_RAW, SOIL_DRY_RAW, 100, 0);
+  int soil2Pct = map(constrain(rawSoil2, SOIL_WET_RAW, SOIL_DRY_RAW),
+                     SOIL_WET_RAW, SOIL_DRY_RAW, 100, 0);
+
+  int rawGas = analogRead(MQ135_PIN);
+  int gasPct = map(constrain(rawGas, MQ_MIN, MQ_MAX),
+                   MQ_MIN, MQ_MAX, 0, 100);
+
+  /* ===== MODE ===== */
+  String mode = "AUTO";
+  if (Firebase.RTDB.getString(&fbdo, "/mode"))
+    mode = fbdo.stringData();
+
+  if (mode == "AUTO") {
+    waterState = (soil1Pct <= 40 || soil2Pct <= 40);
+    sprayState = (gasPct > 60);
+  }
+
+  if (mode == "MANUAL") {
+    if (Firebase.RTDB.getString(&fbdo, "/manual/waterPump"))
+      waterState = fbdo.stringData() == "ON";
+    if (Firebase.RTDB.getString(&fbdo, "/manual/sprayPump"))
+      sprayState = fbdo.stringData() == "ON";
+  }
+
+  /* ===== ACTUATORS ===== */
+  digitalWrite(RELAY_WATER, waterState ? LOW : HIGH);
+  digitalWrite(RELAY_SPRAY, sprayState ? LOW : HIGH);
+
+  digitalWrite(LED_WATER, waterState ? HIGH : LOW);
+  digitalWrite(LED_SPRAY, sprayState ? HIGH : LOW);
+
+  /* ===== FIREBASE PUSH ===== */
+  Firebase.RTDB.setFloat(&fbdo, "/live/airTemp", airTemp);
+  Firebase.RTDB.setFloat(&fbdo, "/live/humidity", humidity);
+  if (!isnan(soilTemp))
+    Firebase.RTDB.setFloat(&fbdo, "/live/soilTemp", soilTemp);
+
+  Firebase.RTDB.setInt(&fbdo, "/live/soil1", soil1Pct);
+  Firebase.RTDB.setInt(&fbdo, "/live/soil2", soil2Pct);
+  Firebase.RTDB.setInt(&fbdo, "/live/gas", gasPct);
+
+  Firebase.RTDB.setString(&fbdo, "/live/waterPump", waterState ? "ON" : "OFF");
+  Firebase.RTDB.setString(&fbdo, "/live/sprayPump", sprayState ? "ON" : "OFF");
+
+  delay(5000);
+}
