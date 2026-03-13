@@ -15,69 +15,89 @@
 <body>
 
 <header class="topbar">
-
-<h2>🌱 Smart Farming Dashboard</h2>
-
+  <h2>🌱 Smart Farming Dashboard</h2>
+  <small>Precision Farming Control Panel</small>
 </header>
+
 
 <main class="container">
 
+
+<!-- STATUS -->
+
 <section class="status-grid">
 
-<div class="status-card">
-Mode
-<h3 id="modeText">AUTO</h3>
-</div>
+  <div class="status-card">
+    Mode
+    <h3 id="modeText">AUTO</h3>
+  </div>
 
-<div class="status-card">
-Water Pump
-<h3 id="pump">OFF</h3>
-</div>
+  <div class="status-card">
+    Pump
+    <h3 id="pump">OFF</h3>
+  </div>
 
 </section>
+
+
+
+<!-- SOIL -->
 
 <section class="grid">
 
-<div class="card">
-Soil Moisture 1
-<h2 id="soil">0%</h2>
-</div>
+  <div class="card">
+    Soil Moisture 1
+    <h2 id="soil">0%</h2>
+  </div>
 
-<div class="card">
-Soil Moisture 2
-<h2 id="soil2">0%</h2>
-</div>
+  <div class="card">
+    Soil Moisture 2
+    <h2 id="soil2">0%</h2>
+  </div>
 
 </section>
+
+
+
+<!-- SENSOR GRID -->
 
 <section class="grid">
 
-<div class="card">
-Temperature
-<h2 id="temp">0°C</h2>
-</div>
+  <div class="card">
+    Temperature
+    <h2 id="temp">0°C</h2>
+  </div>
 
-<div class="card">
-Humidity
-<h2 id="hum">0%</h2>
-</div>
+  <div class="card">
+    Humidity
+    <h2 id="hum">0%</h2>
+  </div>
 
-<div class="card">
-Soil Temp
-<h2 id="soilTemp">0°C</h2>
-</div>
+  <div class="card">
+    Soil Temp
+    <h2 id="soilTemp">0°C</h2>
+  </div>
 
-<div class="card">
-Gas
-<h2 id="gas">0%</h2>
-</div>
+  <div class="card">
+    Gas
+    <h2 id="gas">0%</h2>
+  </div>
 
-<div class="card">
-pH
-<h2 id="ph">0</h2>
-</div>
+  <div class="card">
+    pH
+    <h2 id="ph">0</h2>
+  </div>
+
+  <div class="card">
+    Light
+    <h2 id="light">0</h2>
+  </div>
 
 </section>
+
+
+
+<!-- MODE CONTROL -->
 
 <section class="card">
 
@@ -85,35 +105,46 @@ Mode Control
 
 <div class="mode-toggle">
 
-<button onclick="setMode('AUTO')" id="autoBtn">AUTO</button>
-<button onclick="setMode('MANUAL')" id="manualBtn">MANUAL</button>
+<button onclick="setMode('AUTO')">AUTO</button>
+<button onclick="setMode('MANUAL')">MANUAL</button>
 
 </div>
 
 </section>
 
-<section class="actions">
 
-<button onclick="pumpOn()">Pump ON</button>
-<button onclick="pumpOff()">Pump OFF</button>
 
-</section>
+<!-- PUMP -->
 
 <section class="actions">
 
-<button onclick="machineOn()">Spray ON</button>
-<button onclick="machineOff()">Spray OFF</button>
+<button class="on" onclick="pumpOn()">Pump ON</button>
+<button class="off" onclick="pumpOff()">Pump OFF</button>
 
 </section>
+
+
+
+<!-- SPRAY -->
+
+<section class="actions">
+
+<button class="on" onclick="machineOn()">Spray ON</button>
+<button class="off" onclick="machineOff()">Spray OFF</button>
+
+</section>
+
+
 
 <p class="timestamp">
-
 Updated :
 <span id="time"></span>
-
 </p>
 
+
 </main>
+
+
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
